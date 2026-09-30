@@ -32,7 +32,7 @@ st.markdown("""
 st.markdown('<p class="main-title">🛣️ Concrete Recommendation System</p>', unsafe_allow_html=True)
 
 # -------------------------------
-# Database Connection Function (mysql-connector)
+# Database Connection Function
 # -------------------------------
 def get_db_connection():
     return mysql.connector.connect(
@@ -46,16 +46,15 @@ def fetch_pothole_data():
     conn = None
     try:
         conn = get_db_connection()
-        # Query database directly using mysql.connector
-        query = "SELECT id, Lat, `Long`, DigLenhth, DigWidth, DigDepth FROM Pothole ORDER BY id DESC"[cite: 1]
+        query = "SELECT id, Lat, `Long`, DigLenhth, DigWidth, DigDepth FROM Pothole ORDER BY id DESC"
         df = pd.read_sql(query, conn)
         
         # Convert numeric columns
-        df['Lat'] = pd.to_numeric(df['Lat'], errors='coerce')[cite: 1]
-        df['Long'] = pd.to_numeric(df['Long'], errors='coerce')[cite: 1]
-        df['DigLenhth'] = pd.to_numeric(df['DigLenhth'], errors='coerce')[cite: 1]
-        df['DigWidth'] = pd.to_numeric(df['DigWidth'], errors='coerce')[cite: 1]
-        df['DigDepth'] = pd.to_numeric(df['DigDepth'], errors='coerce')[cite: 1]
+        df['Lat'] = pd.to_numeric(df['Lat'], errors='coerce')
+        df['Long'] = pd.to_numeric(df['Long'], errors='coerce')
+        df['DigLenhth'] = pd.to_numeric(df['DigLenhth'], errors='coerce')
+        df['DigWidth'] = pd.to_numeric(df['DigWidth'], errors='coerce')
+        df['DigDepth'] = pd.to_numeric(df['DigDepth'], errors='coerce')
         
         return df
     except mysql.connector.Error as err:
@@ -98,16 +97,16 @@ with tab2:
     st.subheader("Pothole Inspection & Concrete Requirement")
 
     if not df_potholes.empty:
-        pothole_ids = df_potholes['id'].tolist()[cite: 1]
+        pothole_ids = df_potholes['id'].tolist()
         selected_id = st.selectbox("Select Pothole ID to Inspect:", pothole_ids)
 
-        record = df_potholes[df_potholes['id'] == selected_id].iloc[0][cite: 1]
+        record = df_potholes[df_potholes['id'] == selected_id].iloc[0]
 
-        length = record['DigLenhth'][cite: 1]
-        width = record['DigWidth'][cite: 1]
-        depth = record['DigDepth'][cite: 1]
-        lat = record['Lat'][cite: 1]
-        lon = record['Long'][cite: 1]
+        length = record['DigLenhth']
+        width = record['DigWidth']
+        depth = record['DigDepth']
+        lat = record['Lat']
+        lon = record['Long']
 
         # Volume & Concrete calculation
         volume = length * width * depth
@@ -139,7 +138,7 @@ with tab2:
 with tab3:
     st.subheader("Pothole Distribution Map")
     if not df_potholes.empty:
-        valid_coords = df_potholes.dropna(subset=['Lat', 'Long']).rename(columns={'Lat': 'lat', 'Long': 'lon'})[cite: 1]
+        valid_coords = df_potholes.dropna(subset=['Lat', 'Long']).rename(columns={'Lat': 'lat', 'Long': 'lon'})
         if not valid_coords.empty:
             st.map(valid_coords[['lat', 'lon']])
         else:
