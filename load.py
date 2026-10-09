@@ -6,7 +6,7 @@ import streamlit.components.v1 as components
 # -------------------------------
 # Page Config
 # -------------------------------
-st.set_page_config(page_title="Concrete Calculator", layout="wide")
+st.set_page_config(page_title="Concrete Calculator & Inspection", layout="wide")
 
 # -------------------------------
 # Custom CSS
@@ -29,23 +29,30 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown('<p class="main-title">🛣️ Concrete Recommendation System</p>', unsafe_allow_html=True)
+st.markdown('<p class="main-title">🛣️ Concrete Recommendation & Inspection System</p>', unsafe_allow_html=True)
 
 # -------------------------------
-# Database Connection Function
+# Database Connection Settings
 # -------------------------------
+DB_CONFIG = {
+    "host": "82.180.143.66",
+    "user": "u263681140_students",
+    "password": "testStudents@123",
+    "database": "u263681140_students",
+}
+
+@st.cache_resource
 def get_db_connection():
-    return mysql.connector.connect(
-        host="82.180.143.66",
-        user="u263681140_students",
-        password="testStudents@123",
-        database="u263681140_students"
-    )
+    """Establish and return a cached database connection."""
+    return mysql.connector.connect(**DB_CONFIG)
 
 def fetch_pothole_data():
-    conn = None
+    """Fetch numerical measurement data from Pothole table."""
     try:
         conn = get_db_connection()
+        if not conn.is_connected():
+            conn.reconnect(attempts=3, delay=1)
+            
         query = "SELECT id, Lat, `Long`, DigLenhth, DigWidth, DigDepth FROM Pothole ORDER BY id DESC"
         df = pd.read_sql(query, conn)
         
@@ -58,11 +65,34 @@ def fetch_pothole_data():
         
         return df
     except mysql.connector.Error as err:
-        st.error(f"MySQL Error: {err}")
+        st.error(f"MySQL Error (Pothole Table): {err}")
         return pd.DataFrame()
-    finally:
-        if conn and conn.is_connected():
-            conn.close()
+
+def fetch_records(limit=12):
+    """Fetch binary image records from PotPhoto table."""
+    try:
+        conn = get_db_connection()
+        if not conn.is_connected():
+            conn.reconnect(attempts=3, delay=1)
+        
+        cursor = conn.cursor()
+        query = "SELECT id, photo FROM PotPhoto ORDER BY id DESC LIMIT %s"
+        cursor.execute(query, (limit,))
+        records = cursor.fetchall()
+        cursor.close()
+        return records
+    except mysql.connector.Error as err:
+        st.error(f"MySQL Error (PotPhoto Table): {err}")
+        return []
+
+# -------------------------------
+# Sidebar Controls
+# -------------------------------
+st.sidebar.header("Gallery Settings")
+record_limit = st.sidebar.slider("Images to display in Gallery", min_value=1, max_value=50, value=12)
+
+if st.sidebar.button("🔄 Refresh Application"):
+    st.rerun()
 
 # -------------------------------
 # Load Data
@@ -72,7 +102,12 @@ df_potholes = fetch_pothole_data()
 # -------------------------------
 # Tabs
 # -------------------------------
-tab1, tab2, tab3 = st.tabs(["📊 Live Database View", "🧮 Selected Pothole Analysis", "🗺️ All Potholes Map"])
+tab1, tab2, tab3, tab4 = st.tabs([
+    "📊 Live Database View", 
+    "🧮 Selected Pothole Analysis", 
+    "🗺️ All Potholes Map",
+    "📷 Pothole Image Gallery"
+])
 
 # ===============================
 # TAB 1 - LIVE DATABASE VIEW
@@ -82,7 +117,7 @@ with tab1:
     with col_hdr1:
         st.subheader("Live Pothole Data from Database")
     with col_hdr2:
-        if st.button("🔄 Refresh"):
+        if st.button("🔄 Refresh Data"):
             st.rerun()
 
     if not df_potholes.empty:
@@ -145,6 +180,26 @@ with tab3:
             st.warning("No valid GPS coordinates found.")
     else:
         st.warning("No data available.")
+
+# ===============================
+# TAB 4 - POTHOLE IMAGE GALLERY
+# ===============================
+with tab4:
+    st.subheader("Pothole Detection Image Viewer")
+    
+    photo_records = fetch_records(limit=record_limit)
+
+    if not photo_records:
+        st.info("No images found in the database.")
+    else:
+        cols = st.columns(3)
+        for idx, (img_id, photo_bytes) in enumerate(photo_records):
+            col = cols[idx % 3]
+            with col:
+                if photo_bytes:
+                    st.image(photo_bytes, caption=f"Detection ID: {img_id}", use_container_width=True)
+                else:
+                    st.warning(f"Record #{img_id} contains empty photo data.")
 
 # -------------------------------
 # JS Enhancement
