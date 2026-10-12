@@ -150,14 +150,14 @@ with tab2:
         st.markdown('<div class="card">', unsafe_allow_html=True)
         col1, col2 = st.columns(2)
         with col1:
-            st.write(f"**Length:** {length} m")
-            st.write(f"**Width:** {width} m")
-            st.write(f"**Depth:** {depth} m")
+            st.write(f"**Length:** {length} mm")
+            st.write(f"**Width:** {width} mm")
+            st.write(f"**Depth:** {depth} mm")
         with col2:
             st.write(f"**Latitude:** {lat}")
             st.write(f"**Longitude:** {lon}")
             st.write(f"**Calculated Volume:** {volume:.4f} m³")
-            st.write(f"**Concrete Required:** {concrete_kg:.2f} kg")
+            st.write(f"**Concrete Required:** {concrete_kg:.2f} gram")
         st.markdown('</div>', unsafe_allow_html=True)
 
         if pd.notnull(lat) and pd.notnull(lon):
