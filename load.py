@@ -143,8 +143,17 @@ with tab2:
         lon = record['Long']
 
         # Volume & Concrete calculation
-        volume = length * width * depth
-        concrete_kg = volume * 2
+        #volume = length * width * depth
+        #concrete_kg = volume * 2
+        length_m = length / 1000
+        width_m = width / 1000
+        depth_m = depth / 1000
+
+# Calculate volume in m³
+        volume = length_m * width_m * depth_m
+
+# Calculate concrete requirement
+        concrete_kg = volume * 2400
 
         st.markdown('<div class="card">', unsafe_allow_html=True)
         col1, col2 = st.columns(2)
