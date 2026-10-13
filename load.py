@@ -167,7 +167,7 @@ with tab2:
         with col2:
             st.write(f"**Latitude:** {lat}")
             st.write(f"**Longitude:** {lon}")
-            st.write(f"**Calculated Volume:** {volume:.4f} m³")
+            st.write(f"**Calculated Volume:** {volume:.8f} m³")
             st.write(f"**Concrete Required:** {concrete_kg:.2f} kg")
         st.markdown('</div>', unsafe_allow_html=True)
 
