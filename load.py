@@ -145,7 +145,7 @@ with tab2:
 
         # Volume & Concrete calculation
         volume = length * width * depth
-        concrete_kg = volume * 24
+        concrete_kg = volume * 4
 
         st.markdown('<div class="card">', unsafe_allow_html=True)
         col1, col2 = st.columns(2)
@@ -157,7 +157,7 @@ with tab2:
             st.write(f"**Latitude:** {lat}")
             st.write(f"**Longitude:** {lon}")
             st.write(f"**Calculated Volume:** {volume:.4f} m³")
-            st.write(f"**Concrete Required:** {concrete_kg:.2f} gram")
+            #st.write(f"**Concrete Required:** {concrete_kg:.2f} gram")
         st.markdown('</div>', unsafe_allow_html=True)
 
         if pd.notnull(lat) and pd.notnull(lon):
