@@ -62,7 +62,6 @@ def fetch_pothole_data():
         df['DigLenhth'] = pd.to_numeric(df['DigLenhth'], errors='coerce')
         df['DigWidth'] = pd.to_numeric(df['DigWidth'], errors='coerce')
         df['DigDepth'] = pd.to_numeric(df['DigDepth'], errors='coerce')
-        
         return df
     except mysql.connector.Error as err:
         st.error(f"MySQL Error (Pothole Table): {err}")
@@ -157,7 +156,7 @@ with tab2:
             st.write(f"**Latitude:** {lat}")
             st.write(f"**Longitude:** {lon}")
             st.write(f"**Calculated Volume:** {volume:.4f} m³")
-            #st.write(f"**Concrete Required:** {concrete_kg:.2f} gram")
+            st.write(f"**Concrete Required:** {concrete_kg:.2f} gram")
         st.markdown('</div>', unsafe_allow_html=True)
 
         if pd.notnull(lat) and pd.notnull(lon):
