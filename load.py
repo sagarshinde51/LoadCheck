@@ -144,7 +144,7 @@ with tab2:
 
         # Volume & Concrete calculation
         volume = length * width * depth
-        concrete_kg = volume * 4
+        concrete_kg = volume * 2
 
         st.markdown('<div class="card">', unsafe_allow_html=True)
         col1, col2 = st.columns(2)
