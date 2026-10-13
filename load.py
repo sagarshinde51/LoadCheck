@@ -141,7 +141,7 @@ with tab2:
         depth = record['DigDepth']
         lat = record['Lat']
         lon = record['Long']
-        width = (width * 10) * 10
+        width = (width * 10) 
         # Volume & Concrete calculation
         #volume = length * width * depth
         #concrete_kg = volume * 2
@@ -162,7 +162,7 @@ with tab2:
         col1, col2 = st.columns(2)
         with col1:
             st.write(f"**Length:** {length} mm")
-            st.write(f"**Width:** {width} mm")
+            st.write(f"**Width:** {width} cm")
             st.write(f"**Depth:** {depth} mm")
         with col2:
             st.write(f"**Latitude:** {lat}")
