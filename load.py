@@ -165,7 +165,7 @@ with tab2:
             st.write(f"**Latitude:** {lat}")
             st.write(f"**Longitude:** {lon}")
             st.write(f"**Calculated Volume:** {volume:.4f} m³")
-            st.write(f"**Concrete Required:** {concrete_kg:.2f} gram")
+            st.write(f"**Concrete Required:** {concrete_kg:.2f} kg")
         st.markdown('</div>', unsafe_allow_html=True)
 
         if pd.notnull(lat) and pd.notnull(lon):
